@@ -44,7 +44,6 @@ import com.jme.scene.state.BlendState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState.StateType;
 import com.jme.scene.state.TextureState;
-import com.jme.system.DisplaySystem;
 import com.jme.system.dummy.DummySystemProvider;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.export.xml.XMLImporter;
