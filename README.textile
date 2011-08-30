@@ -18,10 +18,8 @@ h3. Example
 @
 // Setup the jME2Loader in your application's AssetManager
 assetManager.registerLoader(JME2Loader.class, "jme");
-
 // Load the model
 Spatial model = assetManager.loadModel("my_model.jme");
-
 // Add the model to the scene
 rootNode.attachChild(model);
 @
