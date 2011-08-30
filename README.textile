@@ -15,10 +15,7 @@ h2. Why use it?
 
 h3. Example
 
-@// Setup the jME2Loader in your application's AssetManager
-assetManager.registerLoader(JME2Loader.class, "jme");
-// Load the model
+@assetManager.registerLoader(JME2Loader.class, "jme");
 Spatial model = assetManager.loadModel("my_model.jme");
-// Add the model to the scene
 rootNode.attachChild(model);
 @
