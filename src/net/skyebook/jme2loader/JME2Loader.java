@@ -76,20 +76,6 @@ public class JME2Loader implements AssetLoader{
 
 	private static final Logger logger = Logger.getLogger(JME2Loader.class.getName());
 
-	private static ArrayList<com.jme.image.Image.Format> unsupportedImageFormat;
-	static{
-		unsupportedImageFormat = new ArrayList<com.jme.image.Image.Format>();
-		for(com.jme.image.Image.Format format : com.jme.image.Image.Format.values()){
-			try{
-				if(Image.Format.valueOf(format.name())==null){
-					unsupportedImageFormat.add(format);
-				}
-			}catch (IllegalArgumentException e) {
-				unsupportedImageFormat.add(format);
-			}
-		}
-	}
-
 	public static com.jme3.scene.Spatial twoToThree(Spatial spatial, AssetManager assetManager){
 		if(spatial instanceof Node){
 			com.jme3.scene.Node node = new com.jme3.scene.Node(spatial.getName());
@@ -171,8 +157,17 @@ public class JME2Loader implements AssetLoader{
 				mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
 
 				if(spatial.getRenderState(StateType.Texture)!=null){
-					Texture texture = twoToThree(((TextureState)spatial.getRenderState(StateType.Texture)).getTexture());
-					if(texture!=null) mat.setTexture("DiffuseMap", texture);
+					TextureState textureState = (TextureState)spatial.getRenderState(StateType.Texture);
+					System.out.println("There are " + textureState.getNumberOfSetTextures() + " textures set.");
+					for(int i=0; i<TextureState.getNumberOfTotalUnits(); i++){
+						com.jme.image.Texture jme2Texture = textureState.getTexture(i);
+						if(jme2Texture!=null){
+							Texture jme3Texture = TextureConverter.twoToThree(jme2Texture, assetManager);
+							
+							if(jme2Texture!=null) mat.setTexture("DiffuseMap", jme3Texture);
+						}
+						
+					}
 				}
 				/*
 				if(spatial.getRenderState(StateType.Texture)!=null){
@@ -237,54 +232,6 @@ public class JME2Loader implements AssetLoader{
 	public static Quaternion twoToThree(com.jme.math.Quaternion q){
 		return new Quaternion(q.x, q.y, q.z, q.w);
 	}
-
-	public static Texture twoToThree(com.jme.image.Texture texture){
-		try{
-			if(texture.getImage()==null){
-				logger.warning("WTF, null texture coming from jME2?");
-				return null;
-			}
-		}catch(NullPointerException e){
-			logger.warning("WTF, null texture coming from jME2?");
-			return null;
-		}
-		Image jme3Image = twoToThree(texture.getImage());
-		if(jme3Image==null){
-			return null;
-		}
-		if(texture instanceof com.jme.image.Texture1D){
-			System.out.println("1D texture");
-			return new Texture2D(jme3Image);
-		}
-		else if(texture instanceof com.jme.image.Texture2D){
-			return new Texture2D(jme3Image);
-		}
-		else if(texture instanceof com.jme.image.Texture3D){
-			System.out.println("1D texture");
-			return new Texture2D(jme3Image);
-		}
-		else{
-			System.out.println("Conversion failed");
-			return null;
-		}
-	}
-
-	public static Image twoToThree(com.jme.image.Image image){
-		//Image.Format.
-		if(isImageFormatSupported(image.getFormat())){
-			return new Image(Image.Format.valueOf(image.getFormat().name()), image.getWidth(), image.getHeight(), image.getDepth(), image.getData());
-		}
-		else{
-			logger.warning(image.getFormat().name() + " is not supported in jME3!");
-			return null;
-		}
-	}
-
-	public static boolean isImageFormatSupported(com.jme.image.Image.Format format){
-		return !unsupportedImageFormat.contains(format);
-	}
-
-
 
 	@Override
 	public Object load(AssetInfo assetInfo) throws IOException{
