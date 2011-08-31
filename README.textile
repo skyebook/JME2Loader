@@ -6,10 +6,10 @@ Of course, its probably easier to simply load the model in a format provided by 
 h2. Why use it?
 
 * Unmaintained legacy assets
-** _I built a model, converted it to the jME2 file format, and {select excuse: lost || deleted || didn't save the source files_
+** _I built a model, converted it to the jME2 file format, and {select excuse: lost || deleted || didn't save the source files}_
 * User-contributed assets in an online system
-** _Users contributed their time an effort to build assets, and only the .jme files were saved on the server. oops._
-* Workaround for getting model formats that were supported in jME2
+** _Users contributed their time and effort to build assets, and only the .jme files were saved on the server. oops._
+* Workaround for loading model formats that were supported in jME2
 ** If you've got some MD2, or some other esoteric format, assets around, then you should be able to load it into jME2 and send an export to this AssetLoader.
 ** You should think long and hard about why you aren't archiving in another format
 
