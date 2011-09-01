@@ -31,11 +31,15 @@
  */
 package net.skyebook.jme2loader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import com.jme.math.Vector3f;
+import com.jme3.asset.AssetLocator;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.plugins.ClasspathLocator;
+import com.jme3.asset.plugins.FileLocator;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
@@ -103,9 +107,11 @@ public class TextureConverter {
 			}
 		}
 		else{
-			String imageLocation = jme2Texture.getImageLocation();
-
-			newTexture = assetManager.loadTexture(imageLocation);
+			File imageLocation = new File(jme2Texture.getImageLocation());
+			
+			assetManager.registerLocator("binary/", ClasspathLocator.class);
+			
+			newTexture = assetManager.loadTexture(imageLocation.getName());
 		}
 		
 		
