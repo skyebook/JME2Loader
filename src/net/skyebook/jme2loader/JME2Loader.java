@@ -162,9 +162,9 @@ public class JME2Loader implements AssetLoader{
 					for(int i=0; i<TextureState.getNumberOfTotalUnits(); i++){
 						com.jme.image.Texture jme2Texture = textureState.getTexture(i);
 						if(jme2Texture!=null){
-							Texture jme3Texture = TextureConverter.twoToThree(jme2Texture, assetManager);
+							//Texture jme3Texture = TextureConverter.twoToThree(jme2Texture, assetManager);
 							
-							if(jme2Texture!=null) mat.setTexture("DiffuseMap", jme3Texture);
+							//if(jme2Texture!=null) mat.setTexture("DiffuseMap", jme3Texture);
 						}
 						
 					}

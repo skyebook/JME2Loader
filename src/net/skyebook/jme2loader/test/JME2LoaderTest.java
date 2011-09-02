@@ -81,6 +81,10 @@ public class JME2LoaderTest extends SimpleApplication {
 		Spatial model2 = assetManager.loadModel("binary/4487.jme");
 		model2.setLocalTranslation(cam.getLocation().clone().setY(1f).setZ(1f));
 		rootNode.attachChild(model2);
+		
+		Spatial model3 = assetManager.loadModel("binary/MobBossSkin.jme");
+		model3.setLocalTranslation(cam.getLocation().clone().setY(1f).setZ(1f));
+		rootNode.attachChild(model3);
 	}
 
 	/**
