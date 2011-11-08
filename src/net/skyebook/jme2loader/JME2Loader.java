@@ -36,11 +36,16 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import com.jme.light.DirectionalLight;
+import com.jme.light.Light;
+import com.jme.light.PointLight;
+import com.jme.light.SpotLight;
 import com.jme.scene.Geometry;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
 import com.jme.scene.state.BlendState;
+import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState.StateType;
 import com.jme.scene.state.TextureState;
@@ -77,6 +82,27 @@ public class JME2Loader implements AssetLoader{
 	private static final Logger logger = Logger.getLogger(JME2Loader.class.getName());
 
 	public static com.jme3.scene.Spatial twoToThree(Spatial spatial, AssetManager assetManager){
+		
+		com.jme3.scene.Spatial returnable;
+		ArrayList<com.jme3.light.Light> newLights = new ArrayList<com.jme3.light.Light>();
+		
+		// process lighting
+		if(spatial.getRenderState(StateType.Light) != null){
+			LightState lightState = (LightState)spatial.getRenderState(StateType.Light);
+			for(Light light : lightState.getLightList()){
+				com.jme3.light.Light newLight;
+				if(light instanceof DirectionalLight){
+					newLights.add(twoToThree((DirectionalLight)light));
+				}
+				else if(light instanceof PointLight){
+					newLights.add(twoToThree((PointLight)light));
+				}
+				else if(light instanceof SpotLight){
+					newLights.add(twoToThree((SpotLight)light));
+				}
+			}
+		}
+		
 		if(spatial instanceof Node){
 			com.jme3.scene.Node node = new com.jme3.scene.Node(spatial.getName());
 			if(((Node)spatial).getQuantity()>0){
@@ -86,7 +112,7 @@ public class JME2Loader implements AssetLoader{
 			}
 			// do translation/rotation/scale
 			transferTranslationScaleRotation(node, spatial);
-			return node;
+			returnable=node;
 		}
 		else if(spatial instanceof Geometry){
 			Mesh mesh = new Mesh();
@@ -201,12 +227,18 @@ public class JME2Loader implements AssetLoader{
 			// do translation/rotation/scale
 			transferTranslationScaleRotation(geometry, spatial);
 
-			return geometry;
+			returnable = geometry;
 		}
 		else{
 			logger.warning("Unrecognized type");
 			return null;
 		}
+		
+		for(com.jme3.light.Light newLight : newLights){
+			returnable.addLight(newLight);
+		}
+		
+		return returnable;
 	}
 
 
@@ -219,6 +251,27 @@ public class JME2Loader implements AssetLoader{
 
 	public static com.jme3.math.ColorRGBA twoToThree(com.jme.renderer.ColorRGBA color){
 		return new com.jme3.math.ColorRGBA(color.r, color.g, color.b, color.a);
+	}
+	
+	public static com.jme3.light.DirectionalLight twoToThree(DirectionalLight light){
+		com.jme3.light.DirectionalLight newLight = new com.jme3.light.DirectionalLight();
+		newLight.setColor(twoToThree(light.getDiffuse()));
+		return newLight;
+	}
+	
+	public static com.jme3.light.PointLight twoToThree(PointLight light){
+		com.jme3.light.PointLight newLight = new com.jme3.light.PointLight();
+		newLight.setColor(twoToThree(light.getDiffuse()));
+		newLight.setPosition(twoToThree(light.getLocation()));
+		return newLight;
+	}
+	
+	public static com.jme3.light.SpotLight twoToThree(SpotLight light){
+		com.jme3.light.SpotLight newLight = new com.jme3.light.SpotLight();
+		newLight.setColor(twoToThree(light.getDiffuse()));
+		newLight.setPosition(twoToThree(light.getLocation()));
+		newLight.setDirection(twoToThree(light.getDirection()));
+		return newLight;
 	}
 
 	public static com.jme3.math.Vector3f twoToThree(com.jme.math.Vector3f vector3f){
