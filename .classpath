@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="Models"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jme"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jME3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jME2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
